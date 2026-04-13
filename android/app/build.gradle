@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId "com.physio_digital.app"
-        minSdk = 23  // Update this line to use SDK 23
+        minSdkVersion = flutter.minSdkVersion  // Update this line to use SDK 23
         targetSdk = flutter.targetSdkVersion
         versionCode 1  // Set this to a number, usually incremented with each release
         versionName "1.0.0"  // Set this to your version name

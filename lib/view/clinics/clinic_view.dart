@@ -20,7 +20,15 @@ class ClinicsView extends GetView<ListClinicController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionTitle('Clinics'),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF2C3E50), size: 20),
+                      onPressed: () => Get.back(),
+                    ),
+                    _buildSectionTitle('Clinics'),
+                  ],
+                ),
                 const SizedBox(height: 12),
                 Expanded(
                   child: Obx(() {

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:physio_digital/view/posts/list_posts.dart';
+import 'package:physio_digital/view/posts/view_post.dart';
 
 class UpcomingEvents extends StatelessWidget {
   const UpcomingEvents({Key? key}) : super(key: key);
@@ -8,7 +11,9 @@ class UpcomingEvents extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle('Upcoming events', onViewAll: () {}),
+        _buildSectionTitle('Upcoming events', onViewAll: () {
+          Get.to(() => const ListPostsPage(initialCategory: 'Events'), transition: Transition.rightToLeft);
+        }),
         _buildEventList(),
       ],
     );
@@ -25,9 +30,7 @@ class UpcomingEvents extends StatelessWidget {
             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
           ),
           TextButton.icon(
-            onPressed: (){
-              // Get.to()
-            },
+            onPressed: onViewAll,
             label: const Text(
               'See all',
               style: TextStyle(color: Color.fromARGB(255, 99, 99, 99)),
@@ -49,30 +52,37 @@ class UpcomingEvents extends StatelessWidget {
   }
 
   Widget _buildEventList() {
+    // Filter events from the central posts list
+    final events = ListPostsPage.posts.where((p) => p['category'] == 'Events').toList();
+    
+    // Define a set of background colors for aesthetics
+    final colors = [
+      Colors.orange.shade100,
+      Colors.teal.shade100,
+      Colors.blue.shade100,
+      Colors.purple.shade100,
+    ];
+
     return SizedBox(
       height: 180,
-      child: ListView(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        children: [
-          _buildEventCard(
-            'Community Wellness Challenge: "Step Up for Health"',
-            '3rd, May',
-            Colors.orange.shade100,
-          ),
-          _buildEventCard(
-            'Live Q&A Session with the Experts',
-            '3rd, May',
-            Colors.teal.shade100,
-          ),
-        ],
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          final post = events[index];
+          return _buildEventCard(
+            post: post,
+            backgroundColor: colors[index % colors.length],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildEventCard(String title, String date, Color backgroundColor) {
+  Widget _buildEventCard({required Map<String, dynamic> post, required Color backgroundColor}) {
     return GestureDetector(
       onTap: () {
-        //Get.to(const ViewArticlePage(post: post,));
+        Get.to(() => ViewArticlePage(post: post), transition: Transition.downToUp);
       },
       child: Container(
         width: 200,
@@ -112,7 +122,7 @@ class UpcomingEvents extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      date,
+                      post['date'] ?? 'TBD',
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,
@@ -122,7 +132,7 @@ class UpcomingEvents extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    title,
+                    post['title'] ?? 'Upcoming Event',
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 14,
@@ -152,3 +162,4 @@ class UpcomingEvents extends StatelessWidget {
     );
   }
 }
+

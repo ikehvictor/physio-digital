@@ -308,12 +308,17 @@ class _QuickStatsSection extends StatelessWidget {
     return RepaintBoundary(
       child: Row(
         children: [
-          const Expanded(
-            child: _QuickStatCard(
-              icon: Icons.local_hospital,
-              label: 'Clinics',
-              value: '50+',
-              color: Colors.orange,
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Get.to(() => const Clinic(initialTab: 1));
+              },
+              child: const _QuickStatCard(
+                icon: Icons.local_hospital,
+                label: 'Clinics',
+                value: '50+',
+                color: Colors.orange,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -331,12 +336,17 @@ class _QuickStatsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
-            child: _QuickStatCard(
-              icon: Icons.shopping_bag,
-              label: 'Products',
-              value: '1K+',
-              color: Colors.purple,
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Get.toNamed('/marketplace');
+              },
+              child: const _QuickStatCard(
+                icon: Icons.shopping_bag,
+                label: 'Products',
+                value: '1K+',
+                color: Colors.purple,
+              ),
             ),
           ),
         ],

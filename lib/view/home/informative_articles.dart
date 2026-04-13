@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:physio_digital/view/posts/list_posts.dart';
+import 'package:physio_digital/view/posts/view_post.dart';
 
 class InformativeArticles extends StatelessWidget {
   const InformativeArticles({Key? key}) : super(key: key);
@@ -11,7 +12,7 @@ class InformativeArticles extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildSectionTitle('Informative Articles.', onViewAll: () {
-          Get.to(() => const ListPostsPage(), transition: Transition.rightToLeft);
+          Get.to(() => const ListPostsPage(initialCategory: 'News'), transition: Transition.rightToLeft);
         }),
         _buildArticleList(),
       ],
@@ -51,30 +52,26 @@ class InformativeArticles extends StatelessWidget {
   }
 
   Widget _buildArticleList() {
+    // Filter news from the central posts list
+    final articles = ListPostsPage.posts.where((p) => p['category'] == 'News').toList();
+
     return SizedBox(
       height: 180,
-      child: ListView(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        children: [
-          _buildArticleCard(
-            'Unlocking the Benefits of Tele-Rehabilitation',
-            'assets/images/onboard.jpg',
-            () {},
-          ),
-          _buildArticleCard(
-            'The Power of Physiotherapy',
-            'assets/images/onboard.jpg',
-            () {},
-          ),
-        ],
+        itemCount: articles.length,
+        itemBuilder: (context, index) {
+          final post = articles[index];
+          return _buildArticleCard(post: post);
+        },
       ),
     );
   }
 
-  Widget _buildArticleCard(String title, String imagePath, VoidCallback onTap) {
+  Widget _buildArticleCard({required Map<String, dynamic> post}) {
     return GestureDetector(
       onTap: () {
-        //Get.to(const ViewArticlePage());
+        Get.to(() => ViewArticlePage(post: post), transition: Transition.fadeIn);
       },
       child: Container(
         width: 200,
@@ -93,12 +90,7 @@ class InformativeArticles extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           child: Stack(
             children: [
-              Image.asset(
-                imagePath,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+              _buildArticleImage(post['imageUrl']),
               Positioned(
                 left: 0,
                 top: 0,
@@ -134,7 +126,7 @@ class InformativeArticles extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.all(8),
                   child: Text(
-                    title,
+                    post['title'] ?? 'Article',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -151,4 +143,20 @@ class InformativeArticles extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildArticleImage(String? imageUrl) {
+    if (imageUrl != null && imageUrl.startsWith('assets/')) {
+      return Image.asset(
+        imageUrl,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      );
+    }
+    return Container(
+      color: Colors.blue[100],
+      child: const Center(child: Icon(Icons.article, color: Colors.blue, size: 40)),
+    );
+  }
 }
+

@@ -3,9 +3,38 @@ import 'package:physio_digital/view/home/buttom_bar.dart';
 import 'package:physio_digital/view/posts/view_post.dart';
 
 class ListPostsPage extends StatelessWidget {
-  const ListPostsPage({Key? key}) : super(key: key);
+  final String initialCategory;
+  const ListPostsPage({Key? key, this.initialCategory = 'All'}) : super(key: key);
 
-  static const List<Map<String, dynamic>> _posts = [
+  static const List<Map<String, dynamic>> posts = [
+    {
+      'title': 'Unlocking the Benefits of Tele-Rehabilitation',
+      'category': 'News',
+      'date': 'May 10, 2024',
+      'description': 'Tele-rehabilitation is revolutionizing the way patients receive care. By using digital platforms, patients can now access expert physiotherapy from the comfort of their homes, ensuring continuity of care and improved outcomes.',
+      'imageUrl': 'assets/images/onboard.jpg',
+    },
+    {
+      'title': 'The Power of Physiotherapy',
+      'category': 'News',
+      'date': 'May 08, 2024',
+      'description': "Physiotherapy is more than just exercises. It's a holistic approach to health that focuses on restoring movement and function. Discover how physiotherapy can help you recover from injury and improve your quality of life.",
+      'imageUrl': 'assets/images/onboard.jpg',
+    },
+    {
+      'title': 'Community Wellness Challenge: "Step Up for Health"',
+      'category': 'Events',
+      'date': '3rd, May',
+      'description': 'Join our community-wide wellness challenge and take a step towards a healthier you! This event is designed to encourage physical activity and promote overall wellness through a series of fun and engaging challenges.',
+      'imageUrl': 'assets/images/onboard.jpg',
+    },
+    {
+      'title': 'Live Q&A Session with the Experts',
+      'category': 'Events',
+      'date': '5th, May',
+      'description': 'Have questions about physiotherapy, injury prevention, or rehabilitation? Join our live Q&A session with leading experts in the field. Get your questions answered in real-time and gain valuable insights from the pros.',
+      'imageUrl': 'assets/images/product3.jpg',
+    },
     {
       'title': 'Stretching can increase your tolerance for pain',
       'category': 'News',
@@ -39,7 +68,7 @@ class ListPostsPage extends StatelessWidget {
       'category': 'Events',
       'date': 'Feb 28, 2024',
       'description': 'Learn about physiotherapy careers and meet practicing professionals...',
-              'imageUrl': 'assets/images/app-logo.png',
+      'imageUrl': 'assets/images/app-logo.png',
     },
     {
       'title': 'Summer Internship Program Applications Open',
@@ -92,27 +121,34 @@ class ListPostsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FD),
-      body: const _PostsPageContent(),
+      body: _PostsPageContent(initialCategory: initialCategory),
       bottomNavigationBar: CustomBottomNavigationBar.create(),
     );
   }
 }
 
 class _PostsPageContent extends StatefulWidget {
-  const _PostsPageContent();
+  final String initialCategory;
+  const _PostsPageContent({required this.initialCategory});
 
   @override
   State<_PostsPageContent> createState() => _PostsPageContentState();
 }
 
 class _PostsPageContentState extends State<_PostsPageContent> {
-  String _selectedCategory = 'All';
+  late String _selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = widget.initialCategory;
+  }
 
   List<Map<String, dynamic>> get _filteredPosts {
     if (_selectedCategory == 'All') {
-      return ListPostsPage._posts;
+      return ListPostsPage.posts;
     }
-    return ListPostsPage._posts
+    return ListPostsPage.posts
         .where((post) => post['category'] == _selectedCategory)
         .toList();
   }
@@ -200,6 +236,11 @@ class _HeaderSliver extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
               child: Row(
                 children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF1A1F38), size: 20),
+                  ),
+                  const SizedBox(width: 8),
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
